@@ -18,7 +18,7 @@ stages:
         image.repository: ${CICD_GIT_REPO_NAME}/${CICD_GIT_REPO_NAME}
         image.tag: ${CICD_GIT_BRANCH}-${CICD_GIT_COMMIT}
         service.type: NodePort
-      name: web
+      name: ${CICD_GIT_REPO_NAME}-with-image
       targetNamespace: ${cicd_git_repo_name}
 timeout: 60
 notification: {}
