@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+    # mongodb資料庫
+    # In your application container, use the hostname mongodb to connect to the MongoDB server
+    mongodb:
+        image: 'bitnami/mongodb:4.2'
+        environment:
+            - ALLOW_EMPTY_PASSWORD=yes
+            - MONGODB_ENABLE_IPV6=false
+
+    web:
+        tty: true # Enables debugging capabilities when attached to this container.
+        build: 
+            context: ./
+            dockerfile: Dockerfile.web
+        image: 'docker.pkg.github.com/aishimeth2135/hw-web-do-score-master/web'
+        environment:
+            - PORT=3000
+            - NODE_ENV=development
+            - DATABASE_URL=mongodb://mongodb:27017/do_score
+            - SKIP_DB_WAIT=0
+            - SKIP_DB_MIGRATION=0
+            - SKIP_NPM_INSTALL=0
+            - SKIP_BOWER_INSTALL=0
+        depends_on:
+            - mongodb
+        expose:
+            - 3000
+        ports:
+            - 32772:3000
