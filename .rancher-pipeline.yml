@@ -1,0 +1,24 @@
+stages:
+- name: build vue image
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: ${CICD_GIT_REPO_NAME}/${CICD_GIT_REPO_NAME}:${CICD_GIT_BRANCH}-${CICD_GIT_COMMIT}
+      pushRemote: true
+      registry: reg.406.csie.nuu.edu.tw
+- name: deploy vue
+  steps:
+  - applyAppConfig:
+      catalogTemplate: cattle-global-data:bitnami-node
+      version: 12.0.4
+      answers:
+        image.pullSecrets[0]: harbor-local
+        image.registry: reg.406.csie.nuu.edu.tw
+        image.repository: ${CICD_GIT_REPO_NAME}/${CICD_GIT_REPO_NAME}
+        image.tag: ${CICD_GIT_BRANCH}-${CICD_GIT_COMMIT}
+        service.type: NodePort
+      name: web
+      targetNamespace: ${cicd_git_repo_name}
+timeout: 60
+notification: {}
